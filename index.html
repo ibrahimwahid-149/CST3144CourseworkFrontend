@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>After-School Lesson</title>
+</head>
+
+<body>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <div id="mydiv">
+    <h1>{{ subject }}</h1>
+    <p>Location: {{ location }}</p>
+    <p>Price: £{{ price }}</p>
+    <img v-bind:src="image" v-bind:alt="imageAlt" width="300">
+  </div>
+
+  <script type="module">
+
+    const {createApp} = Vue
+
+    const myApp = createApp({
+      data() {
+        return {
+          subject: 'Computer Science',
+          location: 'Hendon',
+          price: 25,
+          image: 'images/computing.jpg',
+          imageAlt: 'A computer used for learning'
+        }
+      }
+    })
+
+    myApp.mount('#mydiv')
+
+  </script>
+
+</body>
+</html>
+
