@@ -9,26 +9,63 @@
 <body>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-  <div id="mydiv">
-    <div v-for="lesson in lessons">
+  
+<div id="mydiv">
+  <button v-on:click="displayCart = !displayCart" v-bind:disabled="numberOfItems === 0"> Checkout ({{ numberOfItems }}) </button>
+
+  <div v-if="!displayCart">
+    <div v-for="lesson in lessons" :key="lesson.id">
       <h1>{{ lesson.subject }}</h1>
       <p>Location: {{ lesson.location }}</p>
       <p>Price: £{{ lesson.price }}</p>
       <p>Space: {{ lesson.space }}</p>
-      <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt" width="300">
-    </div>
 
+      <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt" width="300">
+
+      <br>
+
+      <button v-on:click="addToCart(lesson)" v-bind:disabled="!canAddToCart(lesson)"> Add to Cart </button>
+    </div>
   </div>
 
-  <script type="module">
+  <div v-else>
+    <h1>Shopping cart</h1>
+    <button v-on:click="displayCart = false"> Back to Lessons </button>
+    <h2>Customer Details</h2>
 
-    const {createApp} = Vue
+    <p>Name: <input type="text" v-model="order.name" placeholder="Enter your name"></p>
+    <p>Phone: <input type="tel" v-model="order.phone" placeholder="Enter your phone number"></p>
+    <p>You have {{ numberOfItems }} lesson(s) in your cart.</p>
+
+    <div v-for="lesson in lessons" :key="lesson.id">
+      <div v-if="cart.includes(lesson.id)">
+        <h2>{{ lesson.subject }}</h2>
+        <p>Price: £{{ lesson.price }}</p>
+
+        <button v-on:click="removeFromCart(lesson)"> Remove </button>
+      </div>
+    </div>
+
+    <h2>Checkout</h2>
+
+    <button
+      v-on:click="submitOrder"
+      v-bind:disabled="!isOrderValid">
+      Checkout
+    </button>
+  </div>
+</div>
+
+
+  <script type="module">
+    const { createApp } = Vue;
+
     const myApp = createApp({
       data() {
         return {
           lessons: [
             {
-              id: 1,
+              id: 1001,
               subject: 'Computer Science',
               location: 'Hendon',
               price: 25,
@@ -36,71 +73,148 @@
               image: 'images/computing.jpg',
               imageAlt: 'A computer used for learning'
             },
-
             {
-              id: 2,
+              id: 1002,
               subject: 'Maths',
               location: 'Hendon',
               price: 30,
-              space: 8,
+              space: 5,
               image: 'images/maths.png',
               imageAlt: 'Math lesson'
             },
-
             {
-              id: 3,
+              id: 1003,
               subject: 'English',
               location: 'Hendon',
               price: 30,
-              space: 10,
+              space: 5,
               image: 'images/english.jpg',
               imageAlt: 'English lesson'
             },
-
             {
-              id: 4,
-              subject: 'biology',
+              id: 1004,
+              subject: 'Biology',
               location: 'Hendon',
               price: 25,
-              space: 5             
+              space: 5,
+              image: 'images/biology.jpg',
+              imageAlt: 'Biology lesson'
             },
             {
-              id: 5,
-              subject: 'chemistry',
+              id: 1005,
+              subject: 'Chemistry',
               location: 'Hendon',
               price: 25,
-              space: 4
+              space: 5,
+              image: 'images/chemistry.jpg',
+              imageAlt: 'Chemistry lesson'
             },
             {
-              id: 6,
-              subject: 'physics',
+              id: 1006,
+              subject: 'Physics',
               location: 'Hendon',
               price: 25,
-              space: 4
+              space: 5,
+              image: 'images/physics.webp',
+              imageAlt: 'Physics lesson'
             },
             {
-              id: 7,
-              subject: 'geography',
+              id: 1007,
+              subject: 'Geography',
               location: 'Hendon',
               price: 15,
-              space: 10
+              space: 5,
+              image: 'images/geography.jpg',
+              imageAlt: 'Geography lesson'
             },
             {
-              id: 8,
-              subject: 'history',
+              id: 1008,
+              subject: 'History',
               location: 'Hendon',
-              price: '15',
-              space: 10
+              price: 15,
+              space: 5,
+              image: 'images/history.jpg',
+              imageAlt: 'History lesson'
+            },
+            {
+              id: 1009,
+              subject: 'Religious Education',
+              location: 'Hendon',
+              price: 15,
+              space: 5,
+              image: 'images/religious.jpg',
+              imageAlt: 'Religious studies lesson'
+            },
+            {
+              id: 1010,
+              subject: 'Business',
+              location: 'Hendon',
+              price: 15,
+              space: 5,
+              image: 'images/business.webp',
+              imageAlt: 'Business lesson'
             }
-          ]
+          ],
 
+            cart: [],
+            displayCart: false,
+
+            order: {
+            name: '',
+            phone: ''
+          }
+        };
+      },
+
+      methods: {
+        addToCart(lesson) {
+          if (this.canAddToCart(lesson)) {
+            this.cart.push(lesson.id);
+            lesson.space--;
+          }
+        },
+
+        canAddToCart(lesson) {
+          return lesson.space > 0;
+        },
+
+        removeFromCart(lesson) {
+          const index = this.cart.indexOf(lesson.id);
+
+          if (index !== -1) {
+            this.cart.splice(index, 1);
+            lesson.space++;
+          }
+        },
+
+        submitOrder() {
+          if (this.isOrderValid) {
+            alert('Your order has been submitted!');
+
+            this.cart = [];
+            this.order.name = '';
+            this.order.phone = '';
+            this.displayCart = false;
+          }
         }
-      }
+      },
 
-    })
+      computed: {
+        numberOfItems() {
+          return this.cart.length;
+        },
 
-    myApp.mount('#mydiv')
+        isOrderValid() {
+          return /^[a-zA-Z ]+$/.test(this.order.name.trim()) &&
+                /^[0-9]+$/.test(this.order.phone.trim()) &&
+                this.numberOfItems > 0;
+        }
+      },
+    });
+
+    myApp.mount('#mydiv');
   </script>
 </body>
 </html>
+
 
