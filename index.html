@@ -10,32 +10,97 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
   <div id="mydiv">
-    <h1>{{ subject }}</h1>
-    <p>Location: {{ location }}</p>
-    <p>Price: £{{ price }}</p>
-    <img v-bind:src="image" v-bind:alt="imageAlt" width="300">
+    <div v-for="lesson in lessons">
+      <h1>{{ lesson.subject }}</h1>
+      <p>Location: {{ lesson.location }}</p>
+      <p>Price: £{{ lesson.price }}</p>
+      <p>Space: {{ lesson.space }}</p>
+      <img v-bind:src="lesson.image" v-bind:alt="lesson.imageAlt" width="300">
+    </div>
+
   </div>
 
   <script type="module">
 
     const {createApp} = Vue
-
     const myApp = createApp({
       data() {
         return {
-          subject: 'Computer Science',
-          location: 'Hendon',
-          price: 25,
-          image: 'images/computing.jpg',
-          imageAlt: 'A computer used for learning'
+          lessons: [
+            {
+              id: 1,
+              subject: 'Computer Science',
+              location: 'Hendon',
+              price: 25,
+              space: 5,
+              image: 'images/computing.jpg',
+              imageAlt: 'A computer used for learning'
+            },
+
+            {
+              id: 2,
+              subject: 'Maths',
+              location: 'Hendon',
+              price: 30,
+              space: 8,
+              image: 'images/maths.png',
+              imageAlt: 'Math lesson'
+            },
+
+            {
+              id: 3,
+              subject: 'English',
+              location: 'Hendon',
+              price: 30,
+              space: 10,
+              image: 'images/english.jpg',
+              imageAlt: 'English lesson'
+            },
+
+            {
+              id: 4,
+              subject: 'biology',
+              location: 'Hendon',
+              price: 25,
+              space: 5             
+            },
+            {
+              id: 5,
+              subject: 'chemistry',
+              location: 'Hendon',
+              price: 25,
+              space: 4
+            },
+            {
+              id: 6,
+              subject: 'physics',
+              location: 'Hendon',
+              price: 25,
+              space: 4
+            },
+            {
+              id: 7,
+              subject: 'geography',
+              location: 'Hendon',
+              price: 15,
+              space: 10
+            },
+            {
+              id: 8,
+              subject: 'history',
+              location: 'Hendon',
+              price: '15',
+              space: 10
+            }
+          ]
+
         }
       }
+
     })
 
     myApp.mount('#mydiv')
-
   </script>
-
 </body>
 </html>
 
